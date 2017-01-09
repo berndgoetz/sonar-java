@@ -229,7 +229,7 @@ public class DivisionByZeroCheck extends SECheck {
       if (expression.is(Tree.Kind.IDENTIFIER)) {
         String name = ((IdentifierTree) expression).name();
         expressionName = "'" + name + "'";
-        flowMessage = name + " is divided by zero";
+        flowMessage = expressionName + " is divided by zero";
       } else {
         expressionName = "this expression";
         flowMessage = "this expression contains division by zero";

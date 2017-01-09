@@ -132,7 +132,7 @@ public class FlowComputation {
       ExplodedGraph.Node.LearnedValue lv = learnedValue.get();
       Constraint constraint = parent.programState.getConstraint(lv.getSv());
       JavaFileScannerContext.Location location = constraint == null ? location(parent) :
-        location(parent, lv.getSymbol().name() + " is assigned " + constraint.valueAsString());
+        location(parent, String.format("'%s' is assigned %s", lv.getSymbol().name(), constraint.valueAsString()));
       flow.add(location);
       return parent.programState.getLastEvaluated();
     }
