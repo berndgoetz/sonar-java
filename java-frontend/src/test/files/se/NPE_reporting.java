@@ -21,7 +21,7 @@ class A {
   void null_assigned(Object b, Object c) {
     if(b == null);
     if(c == null);
-    getA().toString(); // Noncompliant [[flows=mnull]] flow@mnull {{...}} flow@mnull {{Result of 'getA()' is dereferenced}}
+    getA().toString(); // Noncompliant [[flows=mnull]] flow@mnull {{'getA' returns null}} flow@mnull {{Result of 'getA()' is dereferenced}}
   }
 
   void reassignement() {
@@ -32,14 +32,14 @@ class A {
   }
 
   void relationshipLearning(Object a) {
-    if (a == null) { // flow@rela [[order=2]] {{...}}
-      a.toString(); // Noncompliant [[flows=rela]] flow@rela [[order=1]] {{'a' is dereferenced}}
+    if (a == null) { //  flow@rela {{assume 'a' is null}}
+      a.toString(); // Noncompliant [[flows=rela]] flow@rela {{'a' is dereferenced}}
     }
   }
 
   void combined(Object a) {
     Object b = new Object();
-    if (a == null) { // flow@comb {{...}}
+    if (a == null) { // flow@comb {{assume 'a' is null}}
       b = a; // flow@comb {{'b' is assigned null}}
       b.toString(); // Noncompliant [[flows=comb]] flow@comb {{'b' is dereferenced}}
     }
@@ -56,7 +56,7 @@ class A {
   }
 
   void recursiveRelation(Object a, Object b) {
-    if ((a == null) == true) { // flow@rec {{...}}
+    if ((a == null) == true) { // flow@rec {{assume 'a' is null}}
       b = a; // flow@rec {{'b' is assigned null}}
       b.toString(); // Noncompliant [[flows=rec]] flow@rec {{'b' is dereferenced}}
     }
@@ -90,12 +90,12 @@ class A {
   }
 
   public void order() {
-    String foo = getFoo();  // flow@ord [[order=3]] {{'foo' is assigned null}} flow@ord [[order=4]] {{...}}
-    String bar = foo;
+    String foo = getFoo();  // flow@ord [[order=4]] {{'foo' is assigned null}} flow@ord [[order=5]] {{'getFoo' returns null}}
+    String bar = foo; // flow@ord [[order=3]] {{'bar' is assigned null}}
     boolean cond = (bar == null);
 
-    if (cond) {                     // flow@ord [[order=2]]
-      foo.toCharArray();            // Noncompliant [[flows=ord]] flow@ord [[order=1]]
+    if (cond) {
+      bar.toCharArray();            // Noncompliant [[flows=ord]] flow@ord [[order=1]]
     }
   }
 }

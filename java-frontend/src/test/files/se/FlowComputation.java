@@ -10,17 +10,25 @@ class A {
 
   void combined(Object a) {
     Object b = new Object();
-    if (a == null) { // flow@comb {{...}}
+    if (a == null) { // flow@comb {{assume 'a' is null}}
       b = a; // flow@comb {{'b' is assigned null}}
       b.toString(); // Noncompliant [[flows=comb]] flow@comb {{'b' is dereferenced}}
     }
   }
 
-  void relationship(boolean a, boolean b) {
-    if(a < b) { // flow@rel {{...}}
-      if(b > a) { // Noncompliant [[flows=rel]] {{Change this condition so that it does not always evaluate to "true"}} flow@rel {{Condition is always true}}
+  public void loops() {
+    int totalGSSEdges = 0;
+    int maxPopped = 0;
+    List<String> strings = Collections.emptyList();
+    for (String gss : strings) { // flow@loop {{...}}
+      String edge = gss; // missing flow message - see SONARJAVA-2049
+      while (edge != null) { // flow@loop {{assume 'edge' is null}}
+        totalGSSEdges++;
+        edge = edge.substring(1);
       }
+      maxPopped = Math.max(maxPopped, gss.toUpperCase() == null ? 0 : 1); // Noncompliant [[flows=loop]] flow@loop {{'gss' is dereferenced}}
     }
   }
+
 }
 

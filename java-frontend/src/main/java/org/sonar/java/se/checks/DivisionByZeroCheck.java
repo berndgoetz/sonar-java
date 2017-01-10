@@ -52,8 +52,18 @@ public class DivisionByZeroCheck extends SECheck {
         return "zero";
       }
     },
-    NON_ZERO,
-    UNDETERMINED
+    NON_ZERO {
+      @Override
+      public String valueAsString() {
+        return "non-zero";
+      }
+    },
+    UNDETERMINED {
+      @Override
+      public String valueAsString() {
+        return "\"maybe-zero\"";
+      }
+    }
   }
 
   /**
